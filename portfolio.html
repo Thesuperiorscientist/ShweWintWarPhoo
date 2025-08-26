@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shwe's Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+  <style>
+    :root {
+      --primary: #ffd700;
+      --dark-bg: #0d0d0d;
+      --card-bg: rgba(26, 26, 26, 0.85);
+      --text-color: #f0f0f0;
+      --accent: #ffd700;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    #vanta-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .content-wrapper {
+      position: relative;
+      z-index: 1;
+    }
+
+    nav {
+      background: rgba(17, 17, 17, 0.8);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      box-shadow: 0 0 10px var(--accent);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    nav .logo {
+      color: var(--accent);
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 25px;
+    }
+
+    nav ul li a {
+      color: var(--text-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: var(--accent);
+    }
+
+    header {
+      padding: 80px 20px;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+
+    .profile-wrapper {
+      background: rgba(17, 17, 17, 0.7);
+      padding: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 30px var(--accent);
+    }
+
+    .profile-pic {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid var(--accent);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      display: block;
+    }
+
+    .profile-pic:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 40px #ffd700cc;
+    }
+
+    .header-text {
+      flex: 1;
+      text-align: left;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .tagline {
+      font-size: 1.3rem;
+      color: #ccc;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .cta-button {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 12px 30px;
+      background: var(--accent);
+      color: #000;
+      text-decoration: none;
+      border-radius: 30px;
+      font-weight: bold;
+      box-shadow: 0 0 15px var(--accent);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      background: #ffcc00;
+    }
+
+    section {
+      padding: 60px 20px;
+      background: rgba(13, 13, 13, 0.7);
+      backdrop-filter: blur(5px);
+      margin: 20px 0;
+      border-radius: 15px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    h2.section-title {
+      text-align: center;
+      font-size: 1.8rem;
+      color: var(--accent);
+      margin-bottom: 40px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+    }
+
+    .card, .badge {
+      background: var(--card-bg);
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .card:hover, .badge:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 25px var(--accent);
+    }
+
+    .badge img {
+      width: 55px;
+      margin-bottom: 10px;
+    }
+
+    .timeline-item {
+      border-left: 4px solid var(--accent);
+      margin-bottom: 25px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -9px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .timeline-item h3 {
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+
+    .timeline-item span {
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+
+    .timeline-item p {
+      margin-top: 8px;
+      font-size: 0.95rem;
+      color: #ddd;
+    }
+
+    footer {
+      background: rgba(17, 17, 17, 0.9);
+      color: var(--text-color);
+      text-align: center;
+      padding: 50px 20px;
+      backdrop-filter: blur(5px);
+    }
+
+    .socialcontact {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .socialcontact a {
+      color: var(--dark-bg);
+      font-size: 1.6rem;
+      padding: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .socialcontact a:hover {
+      transform: translateY(-5px);
+      background: #ffcc00;
+    }
+
+    .read-more-button {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: var(--accent);
+      color: #000;
+      text-decoration: none;
+      border-radius: 25px;
+      font-weight: bold;
+      box-shadow: 0 0 10px var(--accent);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .read-more-button:hover {
+      background: #ffcc00;
+      transform: translateY(-3px);
+    }
+
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .header-text {
+        text-align: center;
+      }
+      
+      nav ul {
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="vanta-bg"></div>
+  <div class="content-wrapper">
+    <nav>
+      <div class="logo">Shwe Wint War Phoo</div>
+      <ul>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <header>
+      <div class="header-content">
+        <div class="profile-wrapper">
+          <img src="./profile.jpg" alt="Profile Picture" class="profile-pic" />
+        </div>
+        <div class="header-text">
+          <h1>Hello... I'm Shwe Wint War Phoo</h1>
+          <p class="tagline">HR Specialist | International Relations</p>
+          <a href="./mycv.pdf" download="Shwe_Wint_War_Phoo_CV.pdf" class="cta-button">Download my Resume</a>
+        </div>
+      </div>
+    </header>
+
+    <section id="projects">
+      <h2 class="section-title">Projects</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>ASEAN MOBILITY PROGRAMME</h3>
+          <img src="./ASEAN.JPG" alt="" style="width: 100%; border-radius: 10px; margin: 10px 0;">
+          <p>Participated in a cross-cultural exchange program engaging with students from across Southeast Asia.</p>
+          <a href="#" class="read-more-button">Read More</a>
+        </div>
+        <div class="card">
+          <h3>Project HOPE</h3>
+          <img src="./PH.jpg" alt="" style="width: 100%; border-radius: 10px; margin: 10px 0;">
+          <p>Led a local initiative focused on empowering Rohingya refugee students through education and workshops.</p>
+          <a href="#" class="read-more-button">Read More</a>
+        </div>
+        <div class="card">
+          <h3>Youth Innovation Challenge</h3>
+          <img src="./YIC.jpeg" alt="" style="width: 100%; border-radius: 10px; margin: 10px 0;">
+          <p>Planned and executed campaigns on green initiatives in collaboration with Innovation Center.</p>
+          <a href="#" class="read-more-button">Read More</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="education">
+      <h2 class="section-title">Education</h2>
+      <div>
+        <div class="timeline-item">
+          <h3>Foundation in Arts</h3>
+          <span>Albukhary International University – 2024-2025</span>
+          <p>Completed a comprehensive foundation program focusing on financial accounting, marketing, law, critical thinking, and interdisciplinary studies.</p>
+        </div>
+        <div class="timeline-item">
+          <h3>Bachelor's degree in Business Administration (General)</h3>
+          <span>University of the People – 2023-Present</span>
+          <p>Currently pursuing a degree in Business Administration with a focus on management principles, organizational behavior, and strategic planning.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <h2 class="section-title">Experience</h2>
+      <div>
+        <div class="timeline-item">
+          <h3>HR Specialist</h3>
+          <span>Islamic Institute of Burma – 2025–Present</span>
+          <p>Team management and recruitment with leadership responsibilities.</p>
+        </div>
+        <div class="timeline-item">
+          <h3>Head Teacher</h3>
+          <span>AIU Myanmar Student Association – 2024–2025</span>
+          <p>Taught refugee students in Alor Setar, Kedah, focusing on English and Math.</p>
+        </div>
+        <div class="timeline-item">
+          <h3>Student Brand Ambassador</h3>
+          <span>AIU Campus TV – 2025–Present</span>
+          <p>Promoted sustainability awareness through tech-enabled campus campaigns.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer id="contact">
+      <h2>Contact Me</h2>
+      <p>Let's connect through my socials below:</p>
+      <div class="socialcontact">
+        <a href="mailto:shwewint.warphoo@student.aiu.edu.my"><i class="fa fa-envelope"></i></a>
+        
+        <a href="https://www.linkedin.com/in/shwe-wint-war-phoo-b88551349/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+      <p style="margin-top: 30px; font-size: 0.85rem;">&copy; 2025 Shwe Wint War Phoo. All rights reserved.</p>
+    </footer>
+
+    
+    <div id="floatingPage" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; overflow:auto;">
+      <div style="max-width:700px; margin:80px auto; background:#1a1a1a; padding:30px; border-radius:12px; color:#f0f0f0; position:relative; box-shadow:0 0 20px #ffd700;">
+        <button onclick="closeFloatingPage()" style="position:absolute; top:10px; right:20px; background:none; border:none; font-size:1.5rem; color:#ffd700; cursor:pointer;">&times;</button>
+        <div id="floatingContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    
+    VANTA.NET({
+      el: "#vanta-bg",
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: 0xffd700,
+      backgroundColor: 0x0d0d0d,
+      points: 12.00,
+      maxDistance: 25.00,
+      spacing: 25.00
+    });
+
+    const projectData = {
+      "ASEAN MOBILITY PROGRAMME": `
+        <h2>ASEAN MOBILITY PROGRAMME</h2>
+        <img src="./ASEAN.JPG" alt="" style="width:100%; border-radius:10px; margin:20px 0;">
+        <p>Throughout the program, I took part in a wide range of enriching activities — from presenting at the ASEAN Young Speaker Contest, to attending workshops on sustainability and innovation, and collaborating with peers in the ASEAN Future Innovators Challenge. I also had the opportunity to discover the IIUM campus through the Inside IIUM Tour, celebrate diversity at ASEAN Unity Night, and engage in policy discussions during the Forum: One Vision, One Identity, One Community. These experiences greatly enhanced my appreciation of ASEAN values and highlighted the vital role of youth in shaping the region's future.</p>
+      `,
+      "Project HOPE": `
+        <h2>Project HOPE</h2>
+        <img src="./PH.jpg" alt="" style="width:100%; border-radius:10px; margin:20px 0;">
+        <p>As the lead coordinator, I spearheaded educational outreach and leadership training programs tailored for marginalized Rohingya refugee youths. I worked closely with community members to identify their unique challenges and designed initiatives that fostered both personal growth and collective empowerment. In this role, I developed sustainable learning modules that combined academic knowledge with practical life skills, ensuring the youths had access to tools that could support their long-term development. Beyond the training, I also emphasized mentorship and capacity building, aiming to inspire confidence, resilience, and a sense of agency among the participants.</p>
+      `,
+      "Youth Innovation Challenge": `
+        <h2>Youth Innovation Challenge</h2>
+        <img src="./YIC.jpeg" alt="" style="width:100%; border-radius:10px; margin:20px 0;">
+        <p>I collaborated with a diverse group of youth innovators to design and promote practical, sustainable solutions addressing pressing issues in waste management and energy conservation. Our teamwork involved research, brainstorming, and the integration of innovative ideas that balanced environmental responsibility with real-world applicability. Through this process, I contributed to developing strategies that not only raised awareness but also offered actionable approaches to sustainability challenges. The initiative culminated in a formal presentation at the National Innovation Forum, where we showcased our solutions to a wider audience of experts, policymakers, and fellow changemakers.</p>
+      `
+    };
+
+    document.querySelectorAll(".read-more-button").forEach(button => {
+      button.addEventListener("click", function(e) {
+        e.preventDefault();
+        const card = this.closest(".card");
+        const title = card.querySelector("h3").innerText.trim();
+        document.getElementById("floatingContent").innerHTML = projectData[title] || "<p>Details coming soon...</p>";
+        document.getElementById("floatingPage").style.display = "block";
+      });
+    });
+
+    function closeFloatingPage() {
+      document.getElementById("floatingPage").style.display = "none";
+    }
+  </script>
+
+</body>
+</html>
